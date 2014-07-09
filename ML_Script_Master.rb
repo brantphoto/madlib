@@ -73,8 +73,9 @@ class Madlib_session
     @madlib = array.join
   end
 
-def wordexchange(str)
-    sampleword = str.scan(/([A-Za-z]*)[\.\,\;\:\?\%]/)
+def wordexchange(array)
+  array.each do |i|
+    sampleword = i.scan(/([A-Za-z]*)[\.\,\;\:\?\%]/)
     if sampleword[0] == nil
       sampleword = str
     else
@@ -117,6 +118,7 @@ def wordexchange(str)
     else
       puts "next word"
     end
+  end
   
     str = str + wordpunct
 end
