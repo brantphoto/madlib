@@ -13,3 +13,5 @@ def want_to_play
     want_to_play
   end
 end
+
+test
