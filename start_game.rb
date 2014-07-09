@@ -14,4 +14,3 @@ def want_to_play
   end
 end
 
-test
