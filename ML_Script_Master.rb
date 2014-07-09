@@ -6,7 +6,7 @@ class Madlib_session
 
   #:attr_reader :madlib, :author
 
-  def initialize(madlib, author)  
+  def initialize(madlib, username, wordsswitched, game_counter,new_user_response)  
     @madlib = madlib  
     @username = username
     @wordsswitched = 0
@@ -32,6 +32,7 @@ class Madlib_session
     puts ""
     answer = answer.downcase
     if answer == "y" 
+      ask_name
       get_passage
     elsif answer == "n"
       abort
@@ -41,8 +42,7 @@ class Madlib_session
   end
 
   def get_passage
-    @user_name = "Kaitlin"
-    puts "Please paste a passage you would like to use to play this game, #{@user_name}."
+    puts "Please paste a passage you would like to use to play this game, #{@username}."
     @madlib = gets.chomp
     to_delete = @madlib.include?("\"")
     if to_delete
@@ -54,16 +54,38 @@ class Madlib_session
     end
     @madlib
   end
-  
-  def fetch_name
-    puts "new user? Y/N"
-    answer = gets.chomp
-    new_user_response = answer.downcase!
-    if @username == "" or new_user_response == "y" #checks to see if the user has already input name in previous round of game
-        puts "What is your name?"
-        @username = gets.chomp
+
+  def ask_name
+    if @username==""
+      puts "What is your name?"
+      @username = gets.chomp
     end
   end
+
+  def new_user_check
+  #@username = ""
+  puts "new user? Y/N"
+  answer = gets.chomp
+  answer = answer.downcase
+  if answer == "y" #checks to see if the user has already input name in previous round of game
+    ask_name
+  elsif answer == "n"
+    puts "welcome back #{@username}"
+  else
+    puts "please type either Y or N"
+    new_user_check
+  end
+end
+
+# def fetch_name
+  #   puts "new user? Y/N"
+  #   answer = gets.chomp
+  #   new_user_response = answer.downcase!
+  #   if @username == "" or new_user_response == "y" #checks to see if the user has already input name in previous round of game
+  #       puts "What is your name?"
+  #       @username = gets.chomp
+  #   end
+  # end
 
   def splitter(str)
     @madlib = str.split
@@ -71,11 +93,15 @@ class Madlib_session
 
   def joiner(array)
     @madlib = array.join
+    puts new_passage.join(" ")
   end
 
-def wordexchange(array)
-  array.each do |i|
-    sampleword = i.scan(/([A-Za-z]*)[\.\,\;\:\?\%]/)
+  def wordexchange(str)
+
+  # if @wordsswitched > 4
+  #   str
+  # else
+    sampleword = str.scan(/([A-Za-z]*)[\.\,\;\:\?\%]/)
     if sampleword[0] == nil
       sampleword = str
     else
@@ -93,35 +119,53 @@ def wordexchange(array)
       config.api_key = '72f822a10caf5b76405070ac1070691e86b0ba82383543f4d'
     end
 
-    derp = Wordnik.word.get_definitions(sampleword)
-    derp2 = derp[0]
-    pos = derp2["partOfSpeech"]
-    puts "#{pos}"
-
-    if pos.include?("adverb")
+    wordnik_json = Wordnik.word.get_definitions(sampleword)
+    word_through_dictionary = wordnik_json[0]
+    part_of_speech = word_through_dictionary["partOfSpeech"]
+    #puts part_of_speech
+    
+    if part_of_speech.include?("adverb")
+      @wordsswitched += 1
       puts "Give me an adverb"
       answer = gets.chomp
-      str = answer 
-      #@wordsswitched = @wordswitched + 1
-    elsif pos.include?("verb")
+      str = answer + wordpunct.to_s
+    elsif part_of_speech.include?("verb")
+      @wordsswitched += 1
       puts "Give me a verb"
-      str = gets.chomp
-      #@wordsswitched = @wordswitched + 1
-    elsif pos.include?("adjective")
+      answer = gets.chomp
+      str = answer + wordpunct.to_s
+    elsif part_of_speech.include?("adjective")
+      @wordsswitched += 1
       puts "Give me an adjective"
-      str = gets.chomp
-      #@wordsswitched += 1
-    elsif pos.include?("noun")
+      answer = gets.chomp
+      str = answer + wordpunct.to_s
+    elsif part_of_speech.include?("noun")
+      @wordsswitched += 1
       puts "Give me a noun"
-      str = gets.chomp
-      #@wordsswitched += 1
+      answer = gets.chomp
+      str = answer + wordpunct.to_s
     else
-      puts "next word"
+      str
     end
+  # end
   end
-  
-    str = str + wordpunct
 end
+
+
+
+session = Madlib_session.new("", "", 0, 0,"").want_to_play
+#session.splitter(@madlib)
+new_passage = []
+@madlib = @madlib.to_s.split
+session.to_print = @madlib.each do |word|
+  if word.length > 4
+    new_passage << wordexchange(word)
+  else
+    new_passage << word
+  end
+end
+session.joiner(new_passage)
+
 
 
 
