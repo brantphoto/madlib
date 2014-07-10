@@ -9,6 +9,7 @@ class Madlib_session
   def initialize(madlib, username, wordsswitched, game_counter,new_user_response)  
     @madlib = madlib  
     @username = username
+    @username = ""
     @wordsswitched = 0
     @game_counter = 0
     @new_user_response
@@ -27,22 +28,18 @@ class Madlib_session
   end
 
   def want_to_play
-
-    puts "Would you like to start a new game? Y/N"
-    answer = gets.chomp
-    puts ""
-    answer = answer.downcase
-    if answer == "y" && @game_counter == 0
+    begin
       ask_name
-    elsif answer == "y"
-      new_user_check
-    elsif answer == "n"
-      abort
-    else
-      want_to_play
-    end
-    get_passage
-    put_together
+      get_passage
+      put_together
+
+      puts "Would you like to play again"
+      answer = gets.chomp
+      puts ""
+      answer = answer.downcase
+
+    end while answer == "y"
+    puts "Goodbye!"
   end
 
   def get_passage
@@ -60,25 +57,32 @@ class Madlib_session
   end
 
   def ask_name
-    if @username==""
+    if !@username.blank?
+      puts "Are you still #{@username}?"
+      same_user = gets.chomp.downcase
+      if same_user[0] != "y"
+        @username = nil
+      end
+    end
+    while @username.blank? 
       puts "What is your name?"
       @username = gets.chomp
     end
   end
 
-  def new_user_check
-  puts "new user? Y/N"
-  answer = gets.chomp
-  answer = answer.downcase
-  if answer == "y" #checks to see if the user has already input name in previous round of game
-    ask_name
-  elsif answer == "n"
-    puts "welcome back #{@username}"
-  else
-    puts "please type either Y or N"
-    new_user_check
-  end
-end
+#   def new_user_check
+#   puts "new user? Y/N"
+#   answer = gets.chomp
+#   answer = answer.downcase
+#   if answer == "y" #checks to see if the user has already input name in previous round of game
+#     ask_name
+#   elsif answer == "n"
+#     puts "welcome back #{@username}"
+#   else
+#     puts "please type either Y or N"
+#     new_user_check
+#   end
+# end
 
   def splitter(str)
     @madlib = str.split
