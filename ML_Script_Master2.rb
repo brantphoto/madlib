@@ -113,9 +113,17 @@ class Madlib_session
     end
 
     wordnik_json = Wordnik.word.get_definitions(sampleword)
-    word_through_dictionary = wordnik_json[0]
-    part_of_speech = word_through_dictionary["partOfSpeech"]
-    #puts part_of_speech
+    puts wordnik_json
+    if !wordnik_json.nil? 
+      word_through_dictionary = wordnik_json[0]
+      if !word_through_dictionary.nil?
+        part_of_speech = word_through_dictionary["partOfSpeech"]
+      else
+        part_of_speech = ""
+      end
+    elsif wordnik_json.nil?
+      part_of_speech = ""
+    end
     
     if part_of_speech.include?("adverb")
       @wordsswitched += 1
