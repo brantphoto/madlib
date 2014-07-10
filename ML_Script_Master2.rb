@@ -4,8 +4,6 @@ require "wordnik"
 
 class Madlib_session
 
-  #:attr_reader :madlib, :author
-
   def initialize(madlib, username, wordsswitched, game_counter,new_user_response)  
     @madlib = madlib  
     @username = username
@@ -33,13 +31,13 @@ class Madlib_session
       get_passage
       put_together
 
-      puts "Would you like to play again"
-      answer = gets.chomp
-      puts ""
-      answer = answer.downcase
+      # puts "Would you like to play again"
+      # answer = gets.chomp
+      # puts ""
+      # answer = answer.downcase
 
-    end while answer == "y"
-    puts "Goodbye!"
+    end while play_again[0] != "y"
+      puts "Goodbye!"
   end
 
   def get_passage
@@ -58,40 +56,30 @@ class Madlib_session
 
   def ask_name
     if !@username.blank?
-      puts "Are you still #{@username}?"
-      same_user = gets.chomp.downcase
-      if same_user[0] != "y"
-        @username = nil
+      puts "Want to play again?"
+      play_again = gets.chomp.downcase
+      if play_again[0] == "y"
+        puts "Are you still #{@username}"
+        same_user = gets.chomp.downcase
       end
-    end
-    while @username.blank? 
+      if same_user[0] != "y"
+          @username = nil
+      end
+    else
+      puts "MADLIBS!!!"
+      puts ""
       puts "What is your name?"
       @username = gets.chomp
     end
   end
-
-#   def new_user_check
-#   puts "new user? Y/N"
-#   answer = gets.chomp
-#   answer = answer.downcase
-#   if answer == "y" #checks to see if the user has already input name in previous round of game
-#     ask_name
-#   elsif answer == "n"
-#     puts "welcome back #{@username}"
-#   else
-#     puts "please type either Y or N"
-#     new_user_check
-#   end
-# end
-
-  def splitter(str)
-    @madlib = str.split
-  end
-
-  def joiner(array)
-    @madlib = array.join
-    puts new_passage.join(" ")
-  end
+      
+      
+  #   end
+  #   while @username.blank? 
+  #     puts "What is your name?"
+  #     @username = gets.chomp
+  #   end
+  # end
 
   def wordexchange(str)
     sampleword = str.scan(/([A-Za-z]*)[\.\,\;\:\?\%]/)
