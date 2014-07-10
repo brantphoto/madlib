@@ -13,13 +13,13 @@ class Madlib_session
     @new_user_response
   end
   def madlib
-  	@madlib
+    @madlib
   end
   def username
-  	@username
+    @username
   end
   def wordsswitched
-  	@wordsswitched
+    @wordsswitched
   end
   def new_user_response
     @new_user_response
