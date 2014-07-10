@@ -10,7 +10,7 @@ class Madlib_session
     @madlib = madlib  
     @username = username
     @wordsswitched = 0
-    @game_counter
+    @game_counter = 0
     @new_user_response
   end
   def madlib
@@ -27,18 +27,22 @@ class Madlib_session
   end
 
   def want_to_play
+
     puts "Would you like to start a new game? Y/N"
     answer = gets.chomp
     puts ""
     answer = answer.downcase
-    if answer == "y" 
+    if answer == "y" && @game_counter == 0
       ask_name
-      get_passage
+    elsif answer == "y"
+      new_user_check
     elsif answer == "n"
       abort
     else
       want_to_play
     end
+    get_passage
+    put_together
   end
 
   def get_passage
@@ -63,7 +67,6 @@ class Madlib_session
   end
 
   def new_user_check
-  #@username = ""
   puts "new user? Y/N"
   answer = gets.chomp
   answer = answer.downcase
@@ -76,16 +79,6 @@ class Madlib_session
     new_user_check
   end
 end
-
-# def fetch_name
-  #   puts "new user? Y/N"
-  #   answer = gets.chomp
-  #   new_user_response = answer.downcase!
-  #   if @username == "" or new_user_response == "y" #checks to see if the user has already input name in previous round of game
-  #       puts "What is your name?"
-  #       @username = gets.chomp
-  #   end
-  # end
 
   def splitter(str)
     @madlib = str.split
@@ -144,28 +137,21 @@ end
       str
     end
   end
-end
 
-
-
-session = Madlib_session.new("", "", 0, 0,"").want_to_play
-#session.splitter(@madlib)
-new_passage = []
-@madlib = @madlib.to_s.split
-session.to_print = @madlib.each do |word|
-  if word.length > 4
-    new_passage << wordexchange(word)
-  else
-    new_passage << word
+  def put_together
+    new_passage = []
+    @madlib.split.each do |word|
+      if word.length > 4
+        new_passage << wordexchange(word)
+      else
+        new_passage << word
+      end
+    end
+  puts new_passage.join(" ")
+  @game_counter += 1
+  want_to_play
   end
 end
-session.joiner(new_passage)
 
-
-
-
-
-
-
-
+session = Madlib_session.new("", "", 0, 0,"").want_to_play
 
