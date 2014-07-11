@@ -26,6 +26,8 @@ class Madlib_session
   end
 
   def want_to_play
+    puts "MADLIBS!!!"
+    puts ""
     begin
       ask_name
       get_passage
@@ -55,19 +57,18 @@ class Madlib_session
   end
 
   def ask_name
-    if !@username.blank?
+    
+    while !@username.blank? #if user has already provided name(for second game)
       puts "Want to play again?"
       play_again = gets.chomp.downcase
       if play_again[0] == "y"
         puts "Are you still #{@username}"
         same_user = gets.chomp.downcase
+      else
+        puts "Goodbye"
       end
-      if same_user[0] != "y"
-          @username = nil
-      end
-    else
-      puts "MADLIBS!!!"
-      puts ""
+    end
+    while same_user[0] == "y" || if !same_user ||=""
       puts "What is your name?"
       @username = gets.chomp
     end
@@ -101,7 +102,6 @@ class Madlib_session
     end
 
     wordnik_json = Wordnik.word.get_definitions(sampleword)
-    puts wordnik_json
     if !wordnik_json.nil? 
       word_through_dictionary = wordnik_json[0]
       if !word_through_dictionary.nil?
